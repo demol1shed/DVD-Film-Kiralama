@@ -1,21 +1,19 @@
-﻿using Backend.Context;
-using Backend.Models;
+﻿using System;
+using SharedLib;
 
-/*using (var context = new DvdContext())
+class Program
 {
-    var movieCount = context.Movies.Count();
-    Console.WriteLine(movieCount);
-
-    if(movieCount == 0)
+    static void Main()
     {
-        var testMovie = new Movie{
-            MovieName = "Inception",
-            Genre = "Sci-Fi",
-            ReleaseDate = DateTime.Now,
-            TimeNotBorrowed = DateTime.Now
-        };
-        context.Movies.Add(testMovie);
-        context.SaveChanges();
-        Console.WriteLine("test filmi eklendi");
+        ConnectTcp.StartServer(5000, ProcessIncomingRequest);
     }
-}*/
+
+    static string ProcessIncomingRequest(string jsonData)
+    {
+        Console.WriteLine("Json talebi geldi: " + jsonData);
+
+        // TODO: json'u deserialize et, bilgileri hashle, db'den kontrol et.
+
+        return "backend'e veri girisi basarili";
+    }
+}
