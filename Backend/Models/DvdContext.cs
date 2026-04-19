@@ -8,6 +8,7 @@ namespace Backend.Context
     public class DvdContext : DbContext
     {
         public DbSet<Movie> Movies {get; set;}
+        public DbSet<Admin> Admins {get; set;}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

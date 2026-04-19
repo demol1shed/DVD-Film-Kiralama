@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json;
+using Backend.Services;
 using SharedLib;
 
 class Program
@@ -11,18 +12,19 @@ class Program
 
     static string ProcessIncomingRequest(string jsonData)
     {
-        Console.WriteLine("Json talebi geldi: " + jsonData);
+        Console.WriteLine("Json talebi geldi");
 
-        // TODO: json'u deserialize et, bilgileri hashle, db'den kontrol et.
-        SignInRequest? signInInfo = JsonSerializer.Deserialize<SignInRequest>(jsonData);
+        try
+        {
+            SignInRequest? request = JsonSerializer.Deserialize<SignInRequest>(jsonData);
+            if(request == null) return "[-] Hata: Gecersiz format hatasi";
+            AuthService authService = new AuthService();
 
-        if(signInInfo == null)
+            return authService.AuthUser(request);
+            
+        }catch (Exception ex)
         {
-            return "null data geldi";
-        }
-        else
-        {
-            return $"gelen isim {signInInfo.Username}";
+            return $"[-] Hata: Sunucu hatasi - {ex.Message}";
         }
     }
 }
