@@ -12,15 +12,21 @@ class Program
 
     static string ProcessIncomingRequest(string jsonData)
     {
-        Console.WriteLine("Json talebi geldi");
+        Console.WriteLine("[*] Info: Json talebi geldi");
 
         try
         {
             SignInRequest? request = JsonSerializer.Deserialize<SignInRequest>(jsonData);
             if(request == null) return "[-] Hata: Gecersiz format hatasi";
             AuthService authService = new AuthService();
-
-            return authService.AuthUser(request);
+            if(request.IsSignIn == true)
+            {
+                return authService.AuthUser(request);
+            }
+            else
+            {
+                return authService.RegisterUser(request);
+            }
             
         }catch (Exception ex)
         {
