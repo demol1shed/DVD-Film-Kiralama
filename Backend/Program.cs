@@ -16,9 +16,9 @@ class Program
 
         try
         {
+            Console.WriteLine(jsonData);
             SignInRequest? request = JsonSerializer.Deserialize<SignInRequest>(jsonData);
             if(request == null) return "[-] Hata: Gecersiz format hatasi";
-            Console.WriteLine(request);
             AuthService authService = new AuthService();
             if(request.IsSignIn == true)
             {
