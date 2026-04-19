@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.Json; // JSON paketlemesi icin eklendi
+using SharedLib; // SignInRequest ve ConnectTcp siniflarini kullanmak icin eklendi
 
 namespace DvdOtomasyonu
 {
@@ -18,6 +20,31 @@ namespace DvdOtomasyonu
         private void ucKayit_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SignInRequest kayitIstegi = new SignInRequest
+            {
+                IsSignIn = false,
+                Username = textBox1.Text, 
+                Password = textBox2.Text  
+            };
+
+            // Paketi JSON formatina ceviriyoruz ki sunucu anlayabilsin
+            string jsonFormatindaVeri = JsonSerializer.Serialize(kayitIstegi);
+
+            // Sunucuya gonderiyoruz ve cevabi aliyoruz
+            try
+            {
+                string sunucudanGelenCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonFormatindaVeri);
+
+                MessageBox.Show("Sunucu Diyor ki: " + sunucudanGelenCevap);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sunucuya bağlanırken bir terslik oldu! Hata: " + ex.Message);
+            }
         }
     }
 }

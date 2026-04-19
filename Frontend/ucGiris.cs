@@ -20,9 +20,10 @@ namespace DvdOtomasyonu
         // Giris yap butonuna tıklandiginda calicacak kisim
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
             SignInRequest girisIstegi = new SignInRequest
             {
+                IsSignIn = true,
                 Username = textBox1.Text,
                 Password = textBox2.Text
             };
