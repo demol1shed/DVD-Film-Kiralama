@@ -1,6 +1,6 @@
 # DVD / Film Kiralama Otomasyonu
 
-Bu proje, farklı işletim sistemleri (Ubuntu ve Windows) üzerinde çalışan bir DVD kiralama otomasyonunun temel mimarisini oluşturmaktadır. Proje, sadece yerel ağ üzerinden port haberleşmesi ve veritabanı entegrasyonuna odaklanan bir istemci-sunucu (client-server) yapısıdır.
+Bu proje, farklı işletim sistemleri (Ubuntu 24.04 ve Windows 11) üzerinde çalışan bir DVD kiralama otomasyonunun temel mimarisini oluşturmaktadır. Proje, sadece yerel ağ üzerinden port haberleşmesi ve veritabanı entegrasyonuna odaklanan bir istemci-sunucu (client-server) yapısıdır.
 
 ## Kullanılan Teknolojiler
 
