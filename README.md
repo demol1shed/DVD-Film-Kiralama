@@ -17,7 +17,7 @@ Kod tekrarını önlemek için projenin merkezinde her iki tarafın da referans 
 * **SharedLib:** Ortak kullanılan `SignInRequest` modellerini ve TCP iletişim metodlarını barındıran sınıf kütüphanesi.
 * **Backend:** Veritabanı sorgularını ve iş mantığını yöneten sunucu tarafı.
 * **Frontend:** Kullanıcı arayüzünü barındıran istemci tarafı.
-* **dvd-otomasyon-db:** SQL Server altyapısını kuran Docker yapılandırması.
+* **dvdOtomasyonDB:** SQL Server altyapısını kuran Docker yapılandırması.
 
 ## Mevcut Durum (Geliştirme Aşaması)
 
@@ -35,14 +35,14 @@ Proje henüz tamamlanmamış olup aktif geliştirme sürecindedir:
 docker-compose up -d
 ```
 
-### Backend (Ubuntu 24.04)
+### 2. Backend (Ubuntu 24.04)
 `.NET CLI` kullanarak sunucuyu başlatın:
 ```bash
 cd Backend
 dotnet run
 ```
 
-### Frontend (Windows 11)
+### 3. Frontend (Windows 11)
 Visual Studıo 2022 ile `DvdOtomasyonu.csproj` dosyasını açın ve `SharedLib` referansının bağlı olduğundan emin olduktan sonra projeyi çalıştırın.
 
-***Not: Yerel ağ haberleşmesi için backend'in çalıştığı makinenin IP adresi ve port izinleri (UFW) kontrol edilmelidir.***
+## ***Not: Yerel ağ haberleşmesi için Backend'in çalıştığı makinenin IP adresi ve port izinleri (UFW) kontrol edilmelidir.***
