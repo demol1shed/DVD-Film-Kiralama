@@ -36,8 +36,22 @@ namespace DvdOtomasyonu
                 // Sunucuya gonderiyoruz ve cevabi aliyoruz
                 string sunucudanGelenCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonFormatindaVeri);
 
+                if(sunucudanGelenCevap != null && sunucudanGelenCevap.Trim() == "[+] BASARI")
+                {
+                    MessageBox.Show("Giris basarili, hosgeldiniz");
+
+                    this.ParentForm?.Hide(); // Giris formunu gizliyoruz
+
+                    AnaForms yeniAnaSayfa = new AnaForms(); // Ana sayfa formunu olusturuyoruz
+                    yeniAnaSayfa.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Giris basarisiz, lütfen bilgilerinizi kontrol edin.");
+                }
+
                 // Gelen cevabi ekranda mesaj kutusu olarak gosteriyoruz
-                MessageBox.Show("Sunucu Diyor ki: " + sunucudanGelenCevap);
+                // MessageBox.Show("Sunucu Diyor ki: " + sunucudanGelenCevap);
             }
             catch (Exception ex)
             {
