@@ -27,7 +27,7 @@ namespace SharedLib
             return reader.ReadLine(); 
         }
 
-        public static void StartServer(int port, Func<string, string> delegateFunc)
+        public static void StartServer(int port, Func<string, uint> delegateFunc)
         {
             TcpListener server = new TcpListener(IPAddress.Any, port);
             server.Start();
@@ -44,7 +44,7 @@ namespace SharedLib
 
                 if (!string.IsNullOrEmpty(incomingJson))
                 {
-                    string answer = delegateFunc(incomingJson);
+                    var answer = delegateFunc(incomingJson);
                     writer.WriteLine(answer);
                 } 
             }

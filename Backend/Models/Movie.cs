@@ -10,7 +10,7 @@ namespace Backend.Models
         [Key]
         public uint Id{get; set;}
         public required string MovieName{get; set;} // required = null olamaz
-        public DateTime ReleaseDate{get; set;}
+        public int ReleaseDate{get; set;}
         public required string Genre{get; set;} // required = null olamaz
         public uint TotalBorrowCount{get; set;}
         public DateTime TimeNotBorrowed{get; set;}

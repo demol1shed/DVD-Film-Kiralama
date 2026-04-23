@@ -26,7 +26,7 @@ namespace DvdOtomasyonu
         {
             SignInRequest kayitIstegi = new SignInRequest
             {
-                IsSignIn = false,
+                RequestType = ReqCodes.CodeRegister,
                 Username = textBox1.Text, 
                 Password = textBox2.Text  
             };

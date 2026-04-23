@@ -23,7 +23,7 @@ namespace DvdOtomasyonu
 
             SignInRequest girisIstegi = new SignInRequest
             {
-                IsSignIn = true,
+                RequestType = ReqCodes.CodeSignIn,
                 Username = textBox1.Text,
                 Password = textBox2.Text
             };

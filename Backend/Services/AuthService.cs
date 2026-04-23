@@ -6,29 +6,31 @@ namespace Backend.Services
 {
     public class AuthService
     {
-        public string AuthUser(SignInRequest request)
+        public uint AuthUser(SignInRequest request)
         {
             string hashedPass = DataHasher.HashSha256(request.Password);
+            Console.WriteLine($"hashli req sifre: {hashedPass}, {request.Username}");
 
             using (var db = new DvdContext())
             {
                 var admin = db.Admins.FirstOrDefault(a => a.Username == request.Username && a.Password == hashedPass);
-
+                Console.WriteLine($"hashli db sifre: {admin.Password}, {admin.Username}");
+                Console.WriteLine(hashedPass == admin.Password);
                 if(admin != null)
                 {
-                    return "[+] BASARI";
+                    return ReqCodes.Ok;
                 }
-                return "[-] Kullanici adi veya sifre yanlis";
+                return ReqCodes.ErrorSignIn;
             }
         }
 
-        public string RegisterUser(SignInRequest request)
+        public uint RegisterUser(SignInRequest request)
         {
             using (var db = new DvdContext())
             {
                 if(db.Admins.Any(a => a.Username == request.Username))
                 {
-                    return "[-] Hata: Bu kullanici adi zaten kullaniliyor";
+                    return ReqCodes.ErrorRegister;
                 }
 
                 string hashedPass = DataHasher.HashSha256(request.Password);
@@ -41,7 +43,7 @@ namespace Backend.Services
 
                 db.SaveChanges();
                 Console.WriteLine("[*] Yeni kullanici kaydedildi");
-                return "Kayit basarili";
+                return ReqCodes.Ok;
             }
         }
     }
