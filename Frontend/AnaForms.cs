@@ -46,5 +46,10 @@ namespace DvdOtomasyonu
 
             panelAnaKonteyner.Controls.Add(kiraliklarEkrani);
         }
+
+        private void cikisButton_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
     }
 }

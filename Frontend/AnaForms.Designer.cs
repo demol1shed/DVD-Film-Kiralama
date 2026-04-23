@@ -62,6 +62,7 @@
             cikisButton.TabIndex = 4;
             cikisButton.Text = "Çıkış";
             cikisButton.UseVisualStyleBackColor = true;
+            cikisButton.Click += cikisButton_Click;
             // 
             // panelAnaKonteyner
             // 

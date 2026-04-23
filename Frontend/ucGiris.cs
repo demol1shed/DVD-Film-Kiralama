@@ -32,6 +32,7 @@ namespace DvdOtomasyonu
             string jsonFormatindaVeri = JsonSerializer.Serialize(girisIstegi);
 
             try{
+                string sunucudanGelenCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonFormatindaVeri);
                 // Gelen string cevabı uint formatına (ReqCodes'a) dönüştürüyoruz
                 if (uint.TryParse(sunucudanGelenCevap, out uint cevapKodu))
                 {
