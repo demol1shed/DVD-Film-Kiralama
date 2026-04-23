@@ -38,7 +38,7 @@ namespace SharedLib
                 using TcpClient client = server.AcceptTcpClient();
                 using NetworkStream stream = client.GetStream();
                 using StreamReader reader = new StreamReader(stream, Encoding.UTF8);
-                using StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
+                using StreamWriter writer = new StreamWriter(stream, Encoding.UTF8) {AutoFlush = true};
 
                 string incomingJson = reader.ReadLine();
 

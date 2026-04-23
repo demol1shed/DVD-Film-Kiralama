@@ -33,14 +33,23 @@ namespace DvdOtomasyonu
 
             // Paketi JSON formatina ceviriyoruz ki sunucu anlayabilsin
             string jsonFormatindaVeri = JsonSerializer.Serialize(kayitIstegi);
-
-            // Sunucuya gonderiyoruz ve cevabi aliyoruz
+            
             try
             {
                 string sunucudanGelenCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonFormatindaVeri);
 
-                MessageBox.Show("Sunucu Diyor ki: " + sunucudanGelenCevap);
-            }
+                if (uint.TryParse(sunucudanGelenCevap, out uint cevapKodu))
+                {
+                    if(cevapKodu == ReqCodes.Ok)
+                    {
+                        MessageBox.Show("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+                    }
+                    else if(cevapKodu == ReqCodes.ErrorRegister)
+                    {
+                        MessageBox.Show("Bu kullanıcı adı zaten alınmış!");
+                    }
+                }
+            } 
             catch (Exception ex)
             {
                 MessageBox.Show("Sunucuya bağlanırken bir terslik oldu! Hata: " + ex.Message);

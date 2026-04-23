@@ -31,27 +31,32 @@ namespace DvdOtomasyonu
             // Paketi JSON'a ceviriyoruz
             string jsonFormatindaVeri = JsonSerializer.Serialize(girisIstegi);
 
-            try
-            {
-                // Sunucuya gonderiyoruz ve cevabi aliyoruz
-                string sunucudanGelenCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonFormatindaVeri);
-
-                if(sunucudanGelenCevap != null && sunucudanGelenCevap.Trim() == "[+] BASARI")
+            try{
+                // Gelen string cevabı uint formatına (ReqCodes'a) dönüştürüyoruz
+                if (uint.TryParse(sunucudanGelenCevap, out uint cevapKodu))
                 {
-                    MessageBox.Show("Giris basarili, hosgeldiniz");
+                    if (cevapKodu == ReqCodes.Ok)
+                    {
+                        MessageBox.Show("Giriş başarılı, hoş geldiniz.");
 
-                    this.ParentForm?.Hide(); // Giris formunu gizliyoruz
+                        this.ParentForm?.Hide(); 
 
-                    AnaForms yeniAnaSayfa = new AnaForms(); // Ana sayfa formunu olusturuyoruz
-                    yeniAnaSayfa.Show();
+                        AnaForms yeniAnaSayfa = new AnaForms(); 
+                        yeniAnaSayfa.Show();
+                    }
+                    else if (cevapKodu == ReqCodes.ErrorSignIn)
+                    {
+                        MessageBox.Show("Giriş başarısız, lütfen bilgilerinizi kontrol edin.");
+                    }
+                    else 
+                    {
+                        MessageBox.Show("Sunucudan beklenmeyen bir durum kodu döndü: " + cevapKodu);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Giris basarisiz, lütfen bilgilerinizi kontrol edin.");
+                    MessageBox.Show("Sunucudan anlamsız bir veri geldi: " + sunucudanGelenCevap);
                 }
-
-                // Gelen cevabi ekranda mesaj kutusu olarak gosteriyoruz
-                // MessageBox.Show("Sunucu Diyor ki: " + sunucudanGelenCevap);
             }
             catch (Exception ex)
             {
