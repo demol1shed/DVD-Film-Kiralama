@@ -15,7 +15,7 @@ namespace SharedLib
         /// <param name="port">Ip adresindeki makinede acik olan dinleyici port</param>
         /// <param name="jsonData">Gonderilecek veri</param>
         /// <returns>Sunucunun verecegi yaniti bekler ve dondurur</returns>
-        public static string SendData(string ipAddr, int port, string jsonData)
+        public static uint SendData(string ipAddr, int port, string jsonData)
         {
             using TcpClient client = new TcpClient(ipAddr, port);
             using NetworkStream stream = client.GetStream();
