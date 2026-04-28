@@ -27,7 +27,7 @@ namespace SharedLib
             return reader.ReadLine(); 
         }
 
-        public static void StartServer(int port, Func<string, uint> delegateFunc)
+        public static void StartServer(int port, Func<string, string> delegateFunc)
         {
             TcpListener server = new TcpListener(IPAddress.Any, port);
             server.Start();
