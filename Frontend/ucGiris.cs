@@ -14,7 +14,7 @@ namespace DvdOtomasyonu
     {
         public ucGiris()
         {
-            InitializeComponent();
+            InitializeComponent();  // Formun ilk açıldığında çalışacak kısım
         }
 
         // Giris yap butonuna tıklandiginda calicacak kisim
@@ -40,9 +40,11 @@ namespace DvdOtomasyonu
                     {
                         MessageBox.Show("Giriş başarılı, hoş geldiniz.");
 
-                        this.ParentForm?.Hide(); 
+                        //Giriş yapan kişiyi global hafızaya kaydediyoruz!
+                        Program.AktifKullanici = textBox1.Text;
 
-                        AnaForms yeniAnaSayfa = new AnaForms(); 
+                        this.ParentForm?.Hide();
+                        AnaForms yeniAnaSayfa = new AnaForms();
                         yeniAnaSayfa.Show();
                     }
                     else if (cevapKodu == ReqCodes.ErrorSignIn)

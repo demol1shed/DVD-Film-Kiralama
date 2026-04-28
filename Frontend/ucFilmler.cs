@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SharedLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
-using SharedLib;
 
 namespace DvdOtomasyonu
 {
@@ -17,17 +18,35 @@ namespace DvdOtomasyonu
         {
             InitializeComponent();
 
-            vitrinFilmleri = new List<MovieDTO>
+            // Backend'den tüm filmleri getirmesini istiyoruz
+            MovieRequest istek = new MovieRequest
             {
-                new MovieDTO { Id = 1, MovieName = "Yüzüklerin Efendisi", ReleaseYear = 2001, Genre = "Fantastik", Popularity = 9.8 },
-                new MovieDTO { Id = 2, MovieName = "Matrix", ReleaseYear = 1999, Genre = "Bilim Kurgu", Popularity = 9.5 },
-                new MovieDTO { Id = 3, MovieName = "G.O.R.A.", ReleaseYear = 2004, Genre = "Komedi", Popularity = 8.9 },
-                new MovieDTO { Id = 4, MovieName = "Inception", ReleaseYear = 2010, Genre = "Bilim Kurgu", Popularity = 9.2 }
+                RequestType = ReqCodes.CodeGetAllMovies,
+                Id = 0,
+                MovieName = ""
             };
 
-            dataGridView1.DataSource = vitrinFilmleri;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            string jsonIstek = JsonSerializer.Serialize(istek);
+
+            try
+            {
+                // İsteği yollayıp JSON listesini alıyoruz
+                string jsonCevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonIstek);
+
+                // Gelen JSON verisini C# listesine çevirip tablomuza basıyoruz
+                if (!string.IsNullOrEmpty(jsonCevap) && !jsonCevap.Contains("Hata"))
+                {
+                    vitrinFilmleri = JsonSerializer.Deserialize<List<MovieDTO>>(jsonCevap);
+                    dataGridView1.DataSource = vitrinFilmleri;
+
+                    dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Filmler veritabanından çekilirken hata oluştu: " + ex.Message);
+            }
         }
 
         // Arama kutusuna her harf girildiginde otomatik calisacak tetikleyici
@@ -46,6 +65,49 @@ namespace DvdOtomasyonu
 
             // Tabloyu filtrelenmis yeni listeyle guncelliyoruz
             dataGridView1.DataSource = filtrelenmisListe;
+        }
+
+        private void kiraButton_Click(object sender, EventArgs e)
+        {
+            // Tablodan bir film seçilmiş mi diye kontrol ediyoruz
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                // Seçili satırdaki filmi alıyoruz
+                MovieDTO seciliFilm = (MovieDTO)dataGridView1.SelectedRows[0].DataBoundItem;
+
+                // Kiralama paketimizi güncel RentalRequest kalıbıyla hazırlıyoruz
+                RentalRequest kiraIstegi = new RentalRequest
+                {
+                    RequestType = ReqCodes.CodeRentMovie,
+                    Username = Program.AktifKullanici, // Hafızadaki aktif kullanıcıyı yolluyoruz
+                    MovieId = seciliFilm.Id
+                };
+
+                string jsonIstek = JsonSerializer.Serialize(kiraIstegi);
+
+                try
+                {
+                    // Sunucuya fırlat!
+                    string cevap = ConnectTcp.SendData("10.112.121.96", 5000, jsonIstek);
+
+                    if (uint.TryParse(cevap, out uint cevapKodu) && cevapKodu == ReqCodes.SuccessRent)
+                    {
+                        MessageBox.Show($"{seciliFilm.MovieName} başarıyla kiralandı! Kiraladıklarım sekmesinden görebilirsiniz.", "Başarılı");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Kiralama başarısız! Bu filmi zaten kiralamış olabilirsiniz.", "Uyarı");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Sunucuya ulaşılamadı: " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Lütfen kiralamak için tablodan bir film seçin!", "Bilgi");
+            }
         }
     }
 }
