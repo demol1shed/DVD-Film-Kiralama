@@ -9,6 +9,7 @@ namespace Backend.Context
     {
         public DbSet<Movie> Movies {get; set;}
         public DbSet<Admin> Admins {get; set;}
+        public DbSet<Rental> Rentals {get; set;}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

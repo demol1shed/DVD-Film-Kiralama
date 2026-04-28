@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DvdContext))]
-    [Migration("20260419185643_AddAdminTable")]
-    partial class AddAdminTable
+    [Migration("20260428095014_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,12 +58,15 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("ImdbRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("MovieName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ReleaseDate")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeNotBorrowed")
                         .HasColumnType("datetime2");
