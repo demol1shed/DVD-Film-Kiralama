@@ -54,6 +54,7 @@
             kiraButton.TabIndex = 2;
             kiraButton.Text = "Kirala";
             kiraButton.UseVisualStyleBackColor = true;
+            kiraButton.Click += kiraButton_Click;
             // 
             // label1
             // 
