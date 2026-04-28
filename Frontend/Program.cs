@@ -23,7 +23,7 @@ namespace DvdOtomasyonu
                 MessageBox.Show("Sunucuya baglanirken bir terslik oldu! Hata: " + ex.Message);
             }
             */
-            Application.Run(new Form1());
+            Application.Run(new Form1());  // suanlik server kapali diye test edebilmek icin direkt filmler sayfasina gonderiyorum. Normalde buraya Form1 gelmeli.
         }
     }
 }
