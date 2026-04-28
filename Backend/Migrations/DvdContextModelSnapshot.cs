@@ -55,12 +55,15 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("ImdbRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("MovieName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ReleaseDate")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeNotBorrowed")
                         .HasColumnType("datetime2");

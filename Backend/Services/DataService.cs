@@ -16,13 +16,14 @@ namespace Backend.Services
 
                 if(movie != null)
                 {
+                    // Örnek bir dönüşüm bloğu
                     var movieDto = new MovieDTO
                     {
                         Id = movie.Id,
                         MovieName = movie.MovieName,
                         ReleaseYear = movie.ReleaseDate,
                         Genre = movie.Genre,
-                        Popularity = movie.Popularity
+                        ImdbRating = movie.ImdbRating // Değişen kısım
                     };
 
                     return JsonSerializer.Serialize(movieDto);
@@ -39,15 +40,15 @@ namespace Backend.Services
 
                 if(movie != null)
                 {
+                    // Örnek bir dönüşüm bloğu
                     var movieDto = new MovieDTO
                     {
                         Id = movie.Id,
                         MovieName = movie.MovieName,
                         ReleaseYear = movie.ReleaseDate,
                         Genre = movie.Genre,
-                        Popularity = movie.Popularity
+                        ImdbRating = movie.ImdbRating // Değişen kısım
                     };
-
                     return JsonSerializer.Serialize(movieDto);
                 }
 
@@ -59,13 +60,14 @@ namespace Backend.Services
         {
             using (var db = new DvdContext())
             {
+                // Örnek bir dönüşüm bloğu
                 var movieList = db.Movies.Select(movie => new MovieDTO
                 {
                     Id = movie.Id,
                     MovieName = movie.MovieName,
                     ReleaseYear = movie.ReleaseDate,
                     Genre = movie.Genre,
-                    Popularity = movie.Popularity   
+                    ImdbRating = movie.ImdbRating // Değişen kısım
                 }).ToList();
 
                 return JsonSerializer.Serialize(movieList);
