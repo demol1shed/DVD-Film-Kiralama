@@ -1,48 +1,60 @@
 # DVD / Film Kiralama Otomasyonu
 
-Bu proje, farklı işletim sistemleri (Ubuntu 24.04 ve Windows 11) üzerinde çalışan bir DVD kiralama otomasyonunun temel mimarisini oluşturmaktadır. Proje, sadece yerel ağ üzerinden port haberleşmesi ve veritabanı entegrasyonuna odaklanan bir istemci-sunucu (client-server) yapısıdır.
+Bu proje, farklı işletim sistemleri (Ubuntu 24.04 ve Windows 11) üzerinde çalışan, TCP/IP tabanlı istemci-sunucu (client-server) mimarisine sahip bir DVD ve film kiralama otomasyonudur. Sadece yerel ağ üzerinden port haberleşmesi ve veritabanı entegrasyonu odaklı geliştirilmiştir.
 
 ## Kullanılan Teknolojiler
 
 * **Veritabanı:** Docker üzerinde çalışan Microsoft SQL Server.
-* **Backend:** Ubuntu 24.04 üzerinde C# uygulaması.
-* **Frontend:** Windows 11 üzerinde C# WinForms.
-* **Haberleşme:** TCP/IP protokolü ve JSON Serileştirme.
-* **ORM:** Entity Framework Core (LINQ destekli).
+* **Backend:** Ubuntu üzerinde çalışan .NET 10 (C#) konsol uygulaması.
+* **Frontend:** Windows üzerinde çalışan C# WinForms (.NET 10).
+* **Haberleşme:** Ham TCP/IP protokolü ve JSON Serileştirme.
+* **ORM:** Entity Framework Core (Code-First yaklaşımı ve LINQ).
 
 ## Proje Yapısı
 
-Kod tekrarını önlemek için projenin merkezinde her iki tarafın da referans aldığı bir kütüphane bulunmaktadır:
+Sistem, kod tekrarını önlemek amacıyla her iki tarafın da referans aldığı ortak bir kütüphane etrafında şekillenmiştir:
 
-* **SharedLib:** Ortak kullanılan `SignInRequest` modellerini ve TCP iletişim metodlarını barındıran sınıf kütüphanesi.
-* **Backend:** Veritabanı sorgularını ve iş mantığını yöneten sunucu tarafı.
-* **Frontend:** Kullanıcı arayüzünü barındıran istemci tarafı.
-* **dvdOtomasyonDB:** SQL Server altyapısını kuran Docker yapılandırması.
+* **SharedLib:** `SignInRequest`, `RentalRequest`, `MovieDTO` gibi veri transfer objelerini ve sunucu-istemci arasındaki TCP iletişim metodlarını (`ConnectTcp`) barındıran çekirdek sınıf kütüphanesi.
+* **Backend:** 5000 portunu dinleyen, veritabanı işlemlerini (EF Core) ve uygulamanın iş mantığını (Auth, Rental, Data servisleri) yürüten sunucu.
+* **Frontend:** Kullanıcı arayüzünü barındıran, TCP üzerinden sunucuya istek atıp dönen JSON cevaplarını işleyen masaüstü istemcisi.
+* **dvdOtotmasyonDB:** Veritabanı altyapısını hızlıca ayağa kaldırmak için hazırlanan Docker yapılandırması.
 
-## Mevcut Durum (Geliştirme Aşaması)
+## Özellikler
 
-Proje henüz tamamlanmamış olup aktif geliştirme sürecindedir:
-* **TCP Altyapısı:** Backend ve Frontend arasında port üzerinden mesaj alışverişi aktif durumdadır.
-* **Veritabanı Şeması:** EF Core Migrations ile temel tablolar oluşturulmuş ve Docker üzerinden erişim sağlanmıştır.
-* **İş Mantığı:** Kullanıcı girişindeki SHA256 hashleme ve filmlerin listelenmesi gibi backend fonksiyonları henüz yazım aşamasındadır.
-* **Arayüz/UI:** WinForms tarafında tasarımlar başlangıç seviyesindedir.
+* **Kullanıcı Yetkilendirme:** SHA-256 şifreleme algoritması ile güvenli kullanıcı kaydı ve sisteme giriş.
+* **Otomatik Veri Yükleme (Seeding):** Sunucu ilk ayağa kalktığında dışarıdan bir CSV dosyasını okuyarak film kütüphanesini otomatik olarak veritabanına aktarır.
+* **Film Listeleme ve Arama:** Sistemdeki tüm filmleri listeleyebilme; isim, tür veya ID'ye göre anlık arama/filtreleme.
+* **Kiralama Mekanizması:** İstemci üzerinden seçilen filmi kiralayabilme. Sistem, bir kullanıcının aynı filmi iade etmeden tekrar kiralamasına izin vermez.
+* **Kullanıcı Paneli:** Giriş yapan kullanıcının "Kiraladıklarım" sekmesi altından sadece kendi hesabına tanımlı aktif kiralık filmleri görüntüleyebilmesi.
 
-## Nasıl Çalıştırılır?
+## Kurulum ve Çalıştırma
 
-### 1. Veritabanı (Ubuntu 24.04)
-`dvdOtomasyonDB` klasöründe bir `.env` dosyası oluşturup şifrelerinizi tanımladıktan sonra:
+### 1. Veritabanı
+* `dvdOtotmasyonDB` klasörü içinde bir `.env` dosyası oluşturun. İçerisine `DB_PORT` ve `DB_PASSWORD` değişkenlerini tanımladıktan sonra konteyneri başlatın:
 ```bash
 docker-compose up -d
 ```
 
-### 2. Backend (Ubuntu 24.04)
-`.NET CLI` kullanarak sunucuyu başlatın:
+### Backend (Ubuntu 24.04)
+* `Backend` klasörü içerisinde bir `appsettings.json` dosyası oluşturup/düzenleyip veritabanı bağlantı cümlenizi `DefaultConnection` olarak ayarlayın.
+* `Program.cs` içerisindeki `MovieSeeder.Seed("/yol/filmler.csv")` metodunda bulunan CSV dosya yolunu kendi sisteminize göre güncelleyin.
+* Terminal üzerinden sunucuyu başlatın.
 ```bash
 cd Backend
-dotnet run
+dotnet run 
 ```
 
-### 3. Frontend (Windows 11)
-Visual Studıo 2022 ile `DvdOtomasyonu.csproj` dosyasını açın ve `SharedLib` referansının bağlı olduğundan emin olduktan sonra projeyi çalıştırın.
+### Frontend (Windows 11)
+* `Frontend` klasöründeki WinForms dosyalarında (`ucGiris.cs`, `ucKayit.cs`, `ucFilmler.cs`, `ucKiraliklar.cs`) yer alan `ConnectTcp.SendData("x.x.x.x", xxxx, ...)` satırındaki IP adresini, Backend uygulamasının ağ üzerinde yer aldığı güncel local IP adresiyle değiştirin.
+* VisualStudio ile `DvdOtomasyonu.slnx` üzerinden projeyi derleyip çalıştırın.
 
-## ***Not: Yerel ağ haberleşmesi için Backend'in çalıştığı makinenin IP adresi ve port izinleri (UFW) kontrol edilmelidir.***
+## **Önemli Not:**
+**Yerel ağ haberleşmesinin sağlanabilmesi için Backend'in çalıştığı makinede `UFW` veya `iptables` üzerinden 5000 portuna gelecek olan bağlantılara (`Inbound`) izin verilmiş olması gerekmektedir.**
+
+
+## Gelecekte Eklenebilecekler
+Gelecekte eklenmesi muhtemel olan güncellemeler güvenlik odaklı olacaktır.
+
+* **Anti MITM Şifreleme Güncellemeleri:** Projede anlık olarak SSL/TLS veya uçtan uca şifreleme mekanizması bulunmadığından Backend server'ı **sniffing, MITM** gibi saldırılara açıktır.
+* **Unsalted Hashing/Zayıf Şifre Problemi:** Projede SHA-256 tabanlı hashing algoritmamızda **salting** kullanılmaması dolayısıyla **Rainbow table** gibi saldırılar mümkündür. Aynı zamanda kullanıcıya şifresinin zayıflığı hakkında bilgi verilmemesi **brute forcing** tabanlı şifre tahmini saldırılarına açıktır.
+* **Güvensiz Deserialization:** TCP üzerinden gelen JSON verileri nesnelere dönüşürken, güvensiz dönüştürme sonucunda **RCE**'ye izin verebilir.
